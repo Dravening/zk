@@ -73,11 +73,14 @@ func FLWSrvr(servers []string, timeout time.Duration) ([]*ServerStats, bool) {
 		}
 
 		buildTime, err := time.Parse("01/02/2006 15:04 MST", match[1])
-
 		if err != nil {
-			ss[i] = &ServerStats{Server: servers[i], Error: err}
-			imOk = false
-			continue
+			buildTime, err = time.Parse("2006-01-02 15:04 UTC", match[1])
+			if err != nil {
+				ss[i] = &ServerStats{Server: servers[i], Error: err}
+				imOk = false
+				continue
+			}
+			// fine
 		}
 
 		parsedInt, err := strconv.ParseInt(match[9], 0, 64)
